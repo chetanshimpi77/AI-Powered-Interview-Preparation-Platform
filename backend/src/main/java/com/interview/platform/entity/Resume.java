@@ -4,11 +4,12 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -17,46 +18,45 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users")
+@Table(name = "resumes")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class Resume {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column(nullable = false, length = 255)
-    private String name;
+    private String fileName;
 
-    @Column(nullable = false, unique = true, length = 255)
-    private String email;
+    @Column(nullable = false, length = 500)
+    private String filePath;
 
-    @Column(nullable = false)
-    private String password;
+    @Column
+    private Integer resumeScore;
 
-    @Column(length = 20)
-    private String phone;
+    @Column(columnDefinition = "JSON")
+    private String strongSkills;
 
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "ENUM('USER', 'ADMIN') DEFAULT 'USER'")
-    private UserRole role = UserRole.USER;
+    @Column(columnDefinition = "JSON")
+    private String weakSkills;
 
-    @Column(columnDefinition = "LONGTEXT")
-    private String skills;
+    @Column(columnDefinition = "JSON")
+    private String missingSkills;
 
-    @Column(length = 255)
-    private String experience;
-
-    @Column(length = 500)
-    private String profileImage;
+    @Column(columnDefinition = "JSON", length = 2000)
+    private String suggestions;
 
     @Builder.Default
-    @Column(nullable = false)
-    private Boolean isActive = true;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime uploadDate = LocalDateTime.now();
 
     @Builder.Default
     @Column(nullable = false, updatable = false)
@@ -69,9 +69,5 @@ public class User {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
-    }
-
-    public enum UserRole {
-        USER, ADMIN
     }
 }
