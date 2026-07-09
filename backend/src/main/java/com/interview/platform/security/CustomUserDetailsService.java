@@ -1,11 +1,17 @@
 package com.interview.platform.security;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.interview.platform.entity.User;
+import com.interview.platform.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
